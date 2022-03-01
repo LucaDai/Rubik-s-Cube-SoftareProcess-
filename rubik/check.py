@@ -12,18 +12,24 @@ def _check(parms):
     #Value of cube is present
     encodedCube = parms.get('cube',None) 
     if (encodedCube == None):
-        result['status'] = 'error: xxx'
+        result['status'] = 'error: Missing cube'
         
     #Value of cube is a string
     if not result:
         if (isinstance(encodedCube, str) == False):
-            result['status'] = 'error: xxx'
+            result['status'] = 'error: Invalid cube, cube is not a string'
         
     #Value of cube has 54 elements
     if not result:
         if (len(encodedCube) != 54):
-            result['status'] = 'error: xxx'
-        
+            result['status'] = 'error: Invalid cube, cube length does not match'
+    
+    if not result:
+        for i in range(len(encodedCube)):
+            element = encodedCube[i]
+            if(element.isdecimal() != True) and (element.isalpha() != True):
+                result['status'] = 'error: Invalid cube, cube should only contain digits or alphabets'
+                break
     #Value of cube has 9 occurrences of 6 colors
     if not result:
         color_dict = {}
@@ -34,11 +40,12 @@ def _check(parms):
                 color_dict[encodedCube[element]] = 1
         #Value of cube has of 6 colors
         if (len(color_dict) != 6):
-            result['status'] = 'error: xxx'
+            result['status'] = 'error: Invalid cube, cube colors do not equal to 6'
+            return result
         #And each color has 9 characters
         for element in color_dict:
             if (color_dict[element] != 9):
-                result['status'] = 'error: xxx' 
+                result['status'] = 'error: Invalid cube, each color elements do not equal to 9' 
                 break
             
     #Value of cube has each middle face being a different color
@@ -48,7 +55,7 @@ def _check(parms):
         mid_face = 4
         for element in range(6):
             if(encodedCube[mid_face] in mid_color):
-                result['status'] = 'error: xxx' 
+                result['status'] = 'error: Invalid cube, face colors are not unique' 
                 break 
             mid_color.append(encodedCube[mid_face])
             mid_face += 9   
@@ -56,8 +63,7 @@ def _check(parms):
     #Extra: Value of cube does not has contradictory color
     if not result:    
         #Insert index number of 12 edges
-        edge = [[2, 44], [4, 33], [6, 13], [8, 47], [11, 42], [15, 22],
-                [17, 51], [20, 38], [24, 31], [26, 53], [29, 40], [35, 48]]
+        edge = rubik.getEdge()
         #Transfer index in to color
         edge_color = []
         for element in edge:
@@ -65,8 +71,7 @@ def _check(parms):
             ec2 = encodedCube[element[1] - 1]
             edge_color.append([ec1, ec2])
         #Insert index number of 12 edges
-        corner = [[1, 30, 43], [3, 10, 45], [7, 36, 46], [9, 16, 48],
-                  [12, 19, 39], [18, 25, 54], [21, 37, 28], [27, 34, 52]]
+        corner = rubik.getCorner()
         #Transfer index in to color
         corner_color = []
         for element in corner:
@@ -98,10 +103,10 @@ def _check(parms):
                 back = mid_color[x+1]
                 #same color
                 if (element[0] == element[1]):
-                    result['status'] = 'error: xxx' 
+                    result['status'] = 'error: Invalid cube, cube edges contains same color' 
                 #contradictory color
                 if (front in element) and (back in element):
-                    result['status'] = 'error: xxx' 
+                    result['status'] = 'error: Invalid cube, cube edges contains contradictory color' 
                     
         #Check corners color contradictory
         for element in corner_color:
@@ -114,10 +119,10 @@ def _check(parms):
                 back = mid_color[x+1]
                 #same color
                 if (element[0] == element[1]) or (element[0] == element[2]) or (element[1] == element[2]):
-                    result['status'] = 'error: xxx'  
+                    result['status'] = 'error: Invalid cube, cube corners contains same color'  
                 #contradictory color
                 if (front in element) and (back in element):
-                    result['status'] = 'error: xxx' 
+                    result['status'] = 'error: Invalid cube, cube corners contains contradictory color' 
                 
                 
     #The cube string fits all conditions
