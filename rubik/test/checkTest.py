@@ -29,13 +29,13 @@ class CheckTest(TestCase):
 #    confidence level:    BVA
 #
 #Happy path
-#    test 101:    the 'cube' value of parm is represent a solved cube:
+#    test 001:    the 'cube' value of parm is represent a solved cube:
 #                 'bbbbbbbbbrrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'
 #                 result: {'status': 'ok'}
-#    test 102:    the 'cube' value of parm is represent an unsolved but perfect cube:
+#    test 002:    the 'cube' value of parm is represent an unsolved but perfect cube:
 #                 'gybrbgggoobgowwwyboboggryorbbwwygwyyywyorrrbwrygroobwr'
 #                 result: {'status': 'ok'}
-#    test 103:    the 'cube' value of parm is represent an unsolvable corner rotated cube:
+#    test 003:    the 'cube' value of parm is represent an unsolvable corner rotated cube:
 #                 'bbrbbbbbbyrrrrrrrrgggggggggoooooooooyyyyyyyybwwwwwwwww'
 #                 result: {'status': 'ok'}
 #
@@ -56,13 +56,13 @@ class CheckTest(TestCase):
 #                 result: {'status': 'error: xxx'}
 #    test 908:    Greater than high bound: 'cube' has 7 colors
 #                 result: {'status': 'error: xxx'}
-#    test 909:    Beginning of the String： Value of cube has different occurrences of 6 colors: 10 'b's and 8 'r's
+#    test 909:    Beginning of the String Value of cube has different occurrences of 6 colors: 10 'b's and 8 'r's
 #                 result: {'status': 'error: xxx'}
-#    test 910:    End of string:： Value of cube has different occurrences of 6 colors: 8 'b's and 10 'w's
+#    test 910:    End of string: Value of cube has different occurrences of 6 colors: 8 'b's and 10 'w's
 #                 result: {'status': 'error: xxx'}
-#    test 911:    Beginning of the String： Value of cube has middle face being same color: [r,r,g,o,y,w]
+#    test 911:    Beginning of the String Value of cube has middle face being same color: [r,r,g,o,y,w]
 #                 result: {'status': 'error: xxx'}
-#    test 912:    End of the String： Value of cube has middle face being same color: [b,r,g,o,y,b] 
+#    test 912:    End of the String Value of cube has middle face being same color: [b,r,g,o,y,b] 
 #                 result: {'status': 'error: xxx'}
 #    test 913:    Edge case: one edge has contradictory color: 
 #                 swap position 20 and 44 for solved cube
@@ -83,9 +83,10 @@ class CheckTest(TestCase):
 #    test 918:    Corner case: a corner has two side in same color:
 #                 switch 30,o and 7,b for solved cube
 #                 result: {'status': 'error: xxx'}
+#    test 919:    Should Err On Illegal Characters
 
     #Happy path tests:
-    def test_check_101_ShouldReturnOkOnSolvedCube(self):
+    def test_check_001_ShouldReturnOkOnSolvedCube(self):
         parm = {'op':'check',
                 'cube':'bbbbbbbbbrrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'}
         result = check._check(parm)
@@ -93,14 +94,14 @@ class CheckTest(TestCase):
         status = result.get('status', None)
         self.assertEqual(status, 'ok')
         
-    def test_check_102_ShouldReturnOkOnUnsolvedCube(self):
+    def test_check_002_ShouldReturnOkOnUnsolvedCube(self):
         parm = {'op':'check',
                 'cube':'gybrbgggoobgowwwyboboggryorbbwwygwyyywyorrrbwrygroobwr'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
         self.assertEqual(status, 'ok')
-    def test_check_103_ShouldReturnOkOnUnsolvedCube(self):
+    def test_check_003_ShouldReturnOkOnUnsolvedCube(self):
         parm = {'op':'check',
                 'cube':'bbrbbbbbbyrrrrrrrrgggggggggoooooooooyyyyyyyybwwwwwwwww'}
         result = check._check(parm)
@@ -110,101 +111,101 @@ class CheckTest(TestCase):
         
         
     #Sad path tests:    
-    def test_check_901_ShouldReturnXxxForCubeNotExist(self):
+    def test_check_901_ShouldReturnErrorForCubeNotExist(self):
         parm = {'op':'check'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Missing cube')
         
-    def test_check_902_ShouldReturnXxxForNotString(self): 
+    def test_check_902_ShouldReturnErrorForNotString(self): 
         parm = {'op':'check',
                 'cube': 111111111222222222333333333444444444555555555666666666}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube is not a string')
         
-    def test_check_903_ShouldReturnXxxForEmptyString(self): 
+    def test_check_903_ShouldReturnErrorForEmptyString(self): 
         parm = {'op':'check',
                 'cube':''}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx') 
+        self.assertEqual(status, 'error: Invalid cube, cube length does not match') 
         
-    def test_check_904_ShouldReturnXxxForCubelengthOf53(self): 
+    def test_check_904_ShouldReturnErrorForCubelengthOf53(self): 
         parm = {'op':'check',
                 'cube':'bbbbbbbbrrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx') 
+        self.assertEqual(status, 'error: Invalid cube, cube length does not match') 
         
-    def test_check_905_ShouldReturnXxxForCubelengthOf55(self): 
+    def test_check_905_ShouldReturnErrorForCubelengthOf55(self): 
         parm = {'op':'check',
                 'cube':'bbbbbbbbbbrrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx') 
+        self.assertEqual(status, 'error: Invalid cube, cube length does not match') 
         
-    def test_check_906_ShouldReturnXxxForCubelengthOf108(self): 
+    def test_check_906_ShouldReturnErrorForCubelengthOf108(self): 
         parm = {'op':'check',
                 'cube':'bbbbbbbbbrrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww\
                         bbbbbbbbbrrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx') 
+        self.assertEqual(status, 'error: Invalid cube, cube length does not match') 
         
-    def test_check_907_ShouldReturnXxxFor5ColorCube(self): 
+    def test_check_907_ShouldReturnErrorFor5ColorCube(self): 
         parm = {'op':'check',
                 'cube':'abcdebbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube colors do not equal to 6')
         
-    def test_check_908_ShouldReturnXxxFor7ColorCube(self): 
+    def test_check_908_ShouldReturnErrorFor7ColorCube(self): 
         parm = {'op':'check',
                 'cube':'abcdefgbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube colors do not equal to 6')
         
-    def test_check_909_ShouldReturnXxxForOccurrenceNotMatchAtTheBeginning(self): 
+    def test_check_909_ShouldReturnErrorForOccurrenceNotMatchAtTheBeginning(self): 
         parm = {'op':'check',
                 'cube':'bbbbbbbbbbrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, each color elements do not equal to 9' )
         
-    def test_check_910_ShouldReturnXxxForOccurrenceNotMatchAtTheEnd(self): 
+    def test_check_910_ShouldReturnErrorForOccurrenceNotMatchAtTheEnd(self): 
         parm = {'op':'check',
                 'cube':'bbbbbbbbrrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwwww'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, each color elements do not equal to 9' )
         
-    def test_check_911_ShouldReturnXxxForFaceColorNotMatchAtTheBeginning(self): 
+    def test_check_911_ShouldReturnErrorForFaceColorNotMatchAtTheBeginning(self): 
         parm = {'op':'check',
                 'cube':'bbbbrbbbbbrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')   
+        self.assertEqual(status, 'error: Invalid cube, face colors are not unique')   
         
-    def test_check_912_ShouldReturnXxxForFaceColorNotMatchAtTheEnd(self): 
+    def test_check_912_ShouldReturnErrorForFaceColorNotMatchAtTheEnd(self): 
         parm = {'op':'check',
                 'cube':'bbbbbbbbbwrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwbwwww'}
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, each color elements do not equal to 9' )
     
     def test_check_913_ShouldReturnXxxForContradictoryEdge(self): 
         parm = {'op':'check',
@@ -212,14 +213,14 @@ class CheckTest(TestCase):
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube edges contains contradictory color')
     def test_check_914_ShouldReturnXxxForContradictoryEdge2(self): 
         parm = {'op':'check',
                 'cube':'bbbbbbbbbrrrwrrrrrgggggggggoooooooooyyyyyyyyywwrwwwwww'}        
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube edges contains contradictory color')
         
     def test_check_915_ShouldReturnXxxForSameColorEdge(self): 
         parm = {'op':'check',
@@ -227,7 +228,7 @@ class CheckTest(TestCase):
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx') 
+        self.assertEqual(status, 'error: Invalid cube, cube edges contains same color') 
       
     def test_check_916_ShouldReturnXxxForContradictoryCorner(self): 
         parm = {'op':'check',
@@ -235,7 +236,7 @@ class CheckTest(TestCase):
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube corners contains contradictory color')
         
     def test_check_917_ShouldReturnXxxForContradictoryCorner2(self): 
         parm = {'op':'check',
@@ -243,7 +244,7 @@ class CheckTest(TestCase):
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube corners contains same color')
         
     def test_check_918_ShouldReturnXxxForSameColorCorner(self): 
         parm = {'op':'check',
@@ -252,4 +253,12 @@ class CheckTest(TestCase):
         result = check._check(parm)
         self.assertIn('status', result)
         status = result.get('status', None)
-        self.assertEqual(status, 'error: xxx')
+        self.assertEqual(status, 'error: Invalid cube, cube corners contains same color')
+        
+    def test_check_919_ShouldErrOnIllegalCharacters(self): 
+        parm = {'op':'check',
+                'cube':'         rrrrrrrrrgggggggggoooooooooyyyyyyyyywwwwwwwww'}   
+                            
+        actualResult = check._check(parm)
+        expectedResult = {'status': 'error: Invalid cube, cube should only contain digits or alphabets'}
+        self.assertEqual(actualResult, expectedResult)
