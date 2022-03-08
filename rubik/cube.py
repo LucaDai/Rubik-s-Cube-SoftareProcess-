@@ -22,7 +22,7 @@ def getElement(parms, key):
 #edges array: return index number of 12 edges
 def getEdge():
     edge = [[2, 44], [4, 33], [6, 13], [8, 47], [11, 42], [15, 22],
-                [17, 51], [20, 38], [24, 31], [26, 53], [29, 40], [35, 48]]
+                [17, 51], [20, 38], [24, 31], [26, 53], [29, 40], [35, 49]]
     return edge
 #corners array: return index number of 12 edges
 def getCorner():
